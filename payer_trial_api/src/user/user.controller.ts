@@ -57,7 +57,6 @@ export class UserController {
   }
   @Delete("user/:Id/:avatar")
   deleteUser(@Param() params) {
-    console.log(`${params.Id} ${params.avatar}`);
-    return this._service.deleteUser(params.Id, params.avatar);
+    return this._service.deleteUser(params.Id);
   }
 }

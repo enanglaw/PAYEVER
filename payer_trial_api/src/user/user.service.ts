@@ -65,8 +65,8 @@ export class UserService {
     return result.avatar;
   }
 
-  async deleteUser(Id: string, avatar: string) {
-    await this.userModel.deleteOne({ Id: Id, avatar: avatar }).exec();
+  async deleteUser(Id: string) {
+    await this.userModel.deleteOne({ Id: Id }).exec();
   }
 
   downloadAvatar(url: string): Promise<string> {
