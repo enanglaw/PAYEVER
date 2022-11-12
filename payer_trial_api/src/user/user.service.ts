@@ -57,10 +57,15 @@ export class UserService {
       });
     return result;
   }
+  findAllUsers(): Observable<AxiosResponse<User[]>> {
+    return this.httpService.get<User[]>('https://reqres.in/api/users');
+  }
 
-  async findAll(): Promise<Observable<AxiosResponse<User[], any>>> {
+  /*
+  async findAll(): <Observable<AxiosResponse<User[]>> {
     return await this.httpService.get("https://reqres.in/api/users");
   }
+  */
 
   async deleteUser(Id: string, avatar: string) {
     await this.userModel.deleteOne({ Id: Id, avatar: avatar }).exec();
