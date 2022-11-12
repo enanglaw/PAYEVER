@@ -22,16 +22,18 @@ import { UserService } from "./user.service";
 @Controller("api")
 export class UserController {
   constructor(private _service: UserService) {}
+
+
   @Post("users")
   async createUser(@Body() users: User[]) {
-    (await this._service.findAll()).subscribe((res) => {
-      users = res.data;
-    });
-    Object.keys(users).forEach((user) => {
-      this._service.addUsers(users[user]);
-      console.log(users[user]);
-    });
-    console.log(users);
+     await this._service.findAllUsers().toPromise().then(
+      (res) => {
+        if(res.status === 200 && res.data?.length>0) {
+          res.data.forEach(
+            user =>  this._service.addUsers(user).then(()=> console.log('created user with details: ', user )));
+        }
+      });
+      
   }
   /*@Post("users")
   async addUser(
