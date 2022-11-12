@@ -8,25 +8,13 @@ export class UserController {
   constructor(private _service: UserService) {}
 
   @Post("users")
-  async createUser(@Body() _userDto: User) {
+  async createUser() {
     await this._service
       .findAllUsers()
       .toPromise()
       .then((res) => {
-        if (res.status === 200 && res.data?.length > 0) {
-          res.data.forEach(
-            (user) => {
-              (_userDto.avatar = user.avatar),
-                (_userDto.email = user.email),
-                (_userDto.first_name = user.first_name),
-                (_userDto.last_name = user.last_name);
-            },
-
-            this._service
-              .addUsers(_userDto)
-              .then(() => console.log("created user with details: ", _userDto))
-          );
-        }
+        console.log(`response`, res);
+        this.saveUsers((res.data as any).data as User[]);
       });
   }
 
@@ -35,10 +23,10 @@ export class UserController {
     return await this._service.getUserById(userId);
   }
 
-  @Get("user/:userId/:avatar")
+  @Get("user/:userId/avatar")
   async getUser(@Param("userId") userId: string) {
     const url = await this._service.getUserAvatarUrl(userId);
-    const avatarToBase64 = this._service.downloadAvatar(url).then(
+    const avatarToBase64 = await this._service.downloadAvatar(url).then(
       (response) => {
         return response;
       },
@@ -58,5 +46,23 @@ export class UserController {
   @Delete("user/:Id/:avatar")
   deleteUser(@Param() params) {
     return this._service.deleteUser(params.Id);
+  }
+
+
+  private saveUsers(userInfo: User[]) {
+
+    // const responseData = res.data as any;
+    userInfo.forEach((user) => {
+      const userInfo: User = {
+        id: user.id,
+        avatar: user.avatar,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+      };
+      this._service
+        .addUsers(user)
+        .then(() => console.log("created user with details: ", userInfo));
+    });
   }
 }
