@@ -54,10 +54,21 @@ export class UserController {
   async getUserById(@Param("Id") userId: string) {
     return await this._service.getUserById(userId);
   }
-  @Get("user/:avatar/:Id")
-  getUser(@Param("Id") userId: string, @Param("avatar") avatar: string) {
-    return this._service.getUserByAvatar(userId, avatar);
+
+  @Get("user/:userId/avatar")
+  async getUser(@Param("userId") userId: string) {
+    const url = await this._service.getUserAvatarUrl(userId);
+    this._service.downloadAvatar(url).then(
+      (response) => {
+        return response
+      },
+      (error) => {
+        console.log(`error coocured while downloading avater by url -${url} => `, error);
+      }
+    )
   }
+
+
   @Get("test/:Id/:avatar")
   getTestUser(@Param() params): string {
     return `Id: ${params.Id}, avatar: ${params.avatar}`;
