@@ -1,20 +1,4 @@
-/* eslint-disable @typescript-eslint/adjacent-overload-signatures */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
-import {
-  Body,
-  ConsoleLogger,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Paramtype,
-  Post,
-} from "@nestjs/common";
-import { ApiBody } from "@nestjs/swagger";
-import { ParamsSerializerOptions } from "axios";
-
-import { map } from "rxjs";
+import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { User } from "src/model/user.model";
 
 import { UserService } from "./user.service";
@@ -23,33 +7,29 @@ import { UserService } from "./user.service";
 export class UserController {
   constructor(private _service: UserService) {}
 
-
   @Post("users")
-  async createUser(@Body() users: User[]) {
-     await this._service.findAllUsers().toPromise().then(
-      (res) => {
-        if(res.status === 200 && res.data?.length>0) {
+  async createUser(@Body() _userDto: User) {
+    await this._service
+      .findAllUsers()
+      .toPromise()
+      .then((res) => {
+        if (res.status === 200 && res.data?.length > 0) {
           res.data.forEach(
-            user =>  this._service.addUsers(user).then(()=> console.log('created user with details: ', user )));
+            (user) => {
+              (_userDto.avatar = user.avatar),
+                (_userDto.email = user.email),
+                (_userDto.first_name = user.first_name),
+                (_userDto.last_name = user.last_name);
+            },
+
+            this._service
+              .addUsers(_userDto)
+              .then(() => console.log("created user with details: ", _userDto))
+          );
         }
       });
-      
   }
-  /*@Post("users")
-  async addUser(
-    @Body("email") email: string,
-    @Body("first_name") first_name: string,
-    @Body("last_name") last_name: string,
-    @Body("avatar") avatar: string
-  ) {
-    const generatedId = await this._service.createUser(
-      email,
-      first_name,
-      last_name,
-      avatar
-    );
-    return { id: generatedId };
-  }*/
+
   @Get("user/:Id")
   async getUserById(@Param("Id") userId: string) {
     return await this._service.getUserById(userId);
@@ -60,14 +40,16 @@ export class UserController {
     const url = await this._service.getUserAvatarUrl(userId);
     this._service.downloadAvatar(url).then(
       (response) => {
-        return response
+        return response;
       },
       (error) => {
-        console.log(`error coocured while downloading avater by url -${url} => `, error);
+        console.log(
+          `error coocured while downloading avater by url -${url} => `,
+          error
+        );
       }
-    )
+    );
   }
-
 
   @Get("test/:Id/:avatar")
   getTestUser(@Param() params): string {

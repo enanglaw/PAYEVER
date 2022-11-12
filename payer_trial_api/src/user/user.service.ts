@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -58,28 +57,24 @@ export class UserService {
     return result;
   }
   findAllUsers(): Observable<AxiosResponse<User[]>> {
-    return this.httpService.get<User[]>('https://reqres.in/api/users');
+    return this.httpService.get<User[]>("https://reqres.in/api/users");
   }
-
 
   async getUserAvatarUrl(userId: string) {
-    const result = await this.userModel
-      .findOne({ _id: userId })
-      .exec();
-    return result.avatar; // avater url
+    const result = await this.userModel.findOne({ _id: userId }).exec();
+    return result.avatar;
   }
-  /*
-  async findAll(): <Observable<AxiosResponse<User[]>> {
-    return await this.httpService.get("https://reqres.in/api/users");
-  }
-  */
 
   async deleteUser(Id: string, avatar: string) {
     await this.userModel.deleteOne({ Id: Id, avatar: avatar }).exec();
   }
 
-  downloadAvatar(url: string):Promise<string> {
-    return this.httpService.get(url, {responseType: 'arraybuffer'}).toPromise()
-      .then(response => Buffer.from(response.data, 'binary').toString('base64'))
+  downloadAvatar(url: string): Promise<string> {
+    return this.httpService
+      .get(url, { responseType: "arraybuffer" })
+      .toPromise()
+      .then((response) =>
+        Buffer.from(response.data, "binary").toString("base64")
+      );
   }
 }
