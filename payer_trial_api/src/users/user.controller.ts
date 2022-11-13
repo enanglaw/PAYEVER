@@ -23,7 +23,7 @@ export class UserController {
   }
 
   @Get("user/:Id/avatar")
-  async getUser(@Param() params) {
+  async getUserAvatar(@Param() params) {
     const url = await this._service.getUserAvatarUrl(params.Id);
     const avatarToBase64 = await this._service.downloadAvatar(url).then(
       (response) => {

@@ -47,15 +47,7 @@ export class UserService {
     const result = await this.userModel.find().exec();
     return result;
   }
-  async getUserByAvatar(userId: string, avatar: string) {
-    const result = await this.userModel
-      .find({ _id: userId })
-      .exec()
-      .then((user) => {
-        user.find((s) => s.avatar === avatar);
-      });
-    return result;
-  }
+
   findAllUsers(): Observable<AxiosResponse<User[]>> {
     return this.httpService.get<User[]>("https://reqres.in/api/users");
   }

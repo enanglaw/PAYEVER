@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import * as mongoose from "mongoose";
 export const UserSchema = new mongoose.Schema({
+  id: { type: String },
   email: { type: String, require: [true, "Email is Reqquired"] },
   first_name: { type: String, require: [true, "First Name is Reqquired"] },
   last_name: { type: String, require: [true, "Last Name is Reqquired"] },

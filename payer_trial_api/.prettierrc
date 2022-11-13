@@ -3,7 +3,8 @@
     "error",
     {
       "singleQuote": true,
-      "parser": "flow"
+      "parser": "flow",
+      "semi": true
     }
   ]
 }
