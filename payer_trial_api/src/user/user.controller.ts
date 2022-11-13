@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { User } from "src/model/user.model";
 
 import { UserService } from "./user.service";
@@ -13,7 +13,6 @@ export class UserController {
       .findAllUsers()
       .toPromise()
       .then((res) => {
-        console.log(`response`, res);
         this.saveUsers((res.data as any).data as User[]);
       });
   }
@@ -23,9 +22,9 @@ export class UserController {
     return await this._service.getUserById(userId);
   }
 
-  @Get("user/:userId/avatar")
-  async getUser(@Param("userId") userId: string) {
-    const url = await this._service.getUserAvatarUrl(userId);
+  @Get("user/:Id/avatar")
+  async getUser(@Param() params) {
+    const url = await this._service.getUserAvatarUrl(params.Id);
     const avatarToBase64 = await this._service.downloadAvatar(url).then(
       (response) => {
         return response;
@@ -43,15 +42,12 @@ export class UserController {
   async getUsers() {
     return await this._service.getUsers();
   }
-  @Delete("user/:Id/:avatar")
+  @Delete("user/:Id/avatar")
   deleteUser(@Param() params) {
     return this._service.deleteUser(params.Id);
   }
 
-
   private saveUsers(userInfo: User[]) {
-
-    // const responseData = res.data as any;
     userInfo.forEach((user) => {
       const userInfo: User = {
         id: user.id,
