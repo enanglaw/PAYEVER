@@ -1,25 +1,29 @@
 import { Test } from "@nestjs/testing";
 import { User } from "src/model/user.model";
+import { UserService } from "src/users/user.service";
 import { UserController } from "src/users/user.controller";
 import { userStub } from "./stubs/user.stub";
-jest.mock("../../user.service");
+jest.mock("../user.service");
 describe("UserController", () => {
   let userController: UserController;
+  let userService: UserService;
+  let user: User[] = [];
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [UserController],
+      providers: [UserService],
     }).compile();
     userController = moduleRef.get<UserController>(UserController);
+    userService = moduleRef.get<UserService>(UserService);
     jest.clearAllMocks();
   });
   describe("getUser", () => {
     describe("when getUser is called", () => {
-      let user: User;
       beforeEach(async () => {
         user = await userController.getUserById(userStub().id);
       });
       test("then it should call userService ", () => {
-        expect(userController.getUserById).toBeCalledWith(userStub().id);
+        expect(userService.getUserById).toBeCalledWith(userStub().id);
       });
       test("then it should return a user", () => {
         expect(user).toEqual(userStub());
@@ -28,22 +32,21 @@ describe("UserController", () => {
   });
   describe("getUserAvatar", () => {
     describe("when getUserAvatar is called", () => {
-      let user: User;
       beforeEach(async () => {
-        user = await userController.getUserById(userStub().id);
+        await userController.getUserAvatar(userStub().id);
       });
       test("then it should call userService ", () => {
-        expect(userController.getUserAvatar).toBeCalledWith(userStub().id));
-    });
-    test("then it should return a user with avatar", () => {
-      expect(user).toEqual(userStub().avatar);
+        expect(userService.getUserAvatarUrl).toBeCalledWith(userStub().id);
+      });
+      test("then it should return a user with avatar", () => {
+        expect(user).toEqual(userStub().avatar);
+      });
     });
   });
   describe("deleteUser", () => {
     describe("when deleteUser is called", () => {
-      let user: User;
       beforeEach(async () => {
-        user = await userController.deleteUser(userStub().id);
+        await userController.deleteUser(userStub().id);
       });
       test("then it should call userService ", () => {
         expect(userController.deleteUser).toBeCalledWith(userStub().id);
@@ -66,5 +69,5 @@ describe("UserController", () => {
         expect(user).toEqual(userStub());
       });
     });
-  })
-})
+  });
+});

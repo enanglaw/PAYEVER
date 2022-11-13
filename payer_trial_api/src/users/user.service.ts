@@ -13,7 +13,7 @@ export class UserService {
     @InjectModel("User") private readonly userModel: Model<User>,
     private readonly httpService: HttpService
   ) {}
-  users: User[] = [];
+  user: User;
 
   async createUser(
     email: string,
