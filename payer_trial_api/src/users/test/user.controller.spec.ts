@@ -1,10 +1,10 @@
 import { Test } from "@nestjs/testing";
 import { User } from "src/model/user.model";
-import { UserService } from "src/users/user.service";
-import { UserController } from "src/users/user.controller";
+import { UserController } from "../user.controller";
+import { UserService } from "../user.service";
 import { userStub } from "./stubs/user.stub";
 jest.mock("../user.service");
-describe("UserController", () => {
+describe("User Controller", () => {
   let userController: UserController;
   let userService: UserService;
   let user: User[] = [];
@@ -30,44 +30,18 @@ describe("UserController", () => {
       });
     });
   });
-  describe("getUserAvatar", () => {
-    describe("when getUserAvatar is called", () => {
-      beforeEach(async () => {
-        await userController.getUserAvatar(userStub().id);
-      });
-      test("then it should call userService ", () => {
-        expect(userService.getUserAvatarUrl).toBeCalledWith(userStub().id);
-      });
-      test("then it should return a user with avatar", () => {
-        expect(user).toEqual(userStub().avatar);
-      });
+  describe("create user", () => {
+    test("then it should return a user", () => {
+      expect(user).toEqual(userStub());
     });
   });
-  describe("deleteUser", () => {
-    describe("when deleteUser is called", () => {
-      beforeEach(async () => {
-        await userController.deleteUser(userStub().id);
-      });
-      test("then it should call userService ", () => {
-        expect(userController.deleteUser).toBeCalledWith(userStub().id);
-      });
-      test("then it should return am empty", () => {
-        expect(user).toEqual(userStub());
-      });
-    });
-  });
-  describe("createUser", () => {
-    describe("when createUser is called", () => {
-      let user: User;
-      beforeEach(async () => {
-        await userController.createUser();
-      });
-      test("then it should call userService ", () => {
-        expect(userController.createUser).toBeCalledWith(userStub());
-      });
-      test("then it should return am empty", () => {
-        expect(user).toEqual(userStub());
-      });
+
+  describe("delete User", () => {
+    test("should call deleteNote method with expected param", async () => {
+      const deleteUserSpy = jest.spyOn(userService, "deleteUser");
+      const noteId = "noteId";
+      userService.deleteUser(noteId);
+      expect(deleteUserSpy).toHaveBeenCalledWith(noteId);
     });
   });
 });

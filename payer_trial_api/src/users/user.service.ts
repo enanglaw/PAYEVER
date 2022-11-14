@@ -14,22 +14,6 @@ export class UserService {
     private readonly httpService: HttpService
   ) {}
   user: User;
-
-  async createUser(
-    email: string,
-    first_name: string,
-    last_name: string,
-    avatar: string
-  ) {
-    const newUser = new this.userModel({
-      email: email,
-      first_name: first_name,
-      last_name: last_name,
-      avatar: avatar,
-    });
-    const result = await newUser.save();
-    console.log(result.id);
-  }
   async addUsers(user: User) {
     const newUser = new this.userModel({
       email: user.email,

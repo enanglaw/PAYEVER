@@ -43,8 +43,9 @@ export class UserController {
     return await this._service.getUsers();
   }
   @Delete("user/:Id/avatar")
-  deleteUser(@Param() params) {
-    return this._service.deleteUser(params.Id);
+  async deleteUser(@Param() params) {
+    let deletedUser = await this._service.deleteUser(params.Id);
+    return deletedUser;
   }
 
   private saveUsers(userInfo: User[]) {
